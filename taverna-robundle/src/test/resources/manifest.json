@@ -4,6 +4,20 @@
     ],
     "id": "/",
     "manifest":  "manifest.json",
+    "retrievedFrom": "http://example.com/retrieved",
+    "retrievedOn": "2013-03-05T17:29:03Z",
+    "retrievedBy": {
+      "uri":     "http://example.com/foaf#john",
+      "orcid":   "http://orcid.org/0000-0002-1825-0100",
+      "name":    "John P. Smith"
+    },
+    "importedFrom": "http://example.com/retrieved.tar.gz",
+    "importedOn": "2013-03-05T17:29:21Z",
+    "importedBy": {
+      "uri":     "http://example.com/foaf#david",
+      "orcid":   "http://orcid.org/0000-0002-1825-0129",
+      "name":    "David Jones"
+    },
     "createdOn": "2013-03-05T17:29:03Z",
     "createdBy": {
         "uri":     "http://example.com/foaf#alice",
@@ -11,14 +25,30 @@
         "name":    "Alice W. Land" },
     "history":   "evolution.ttl",
     "aggregates": [
-       { "uri":  "/folder/soup.jpeg" },
+       { "uri":  "/folder/soup.jpeg",
+         "retrievedFrom": "http://example.com/retrieved/soup.jpeg",
+         "retrievedOn": "2013-03-05T17:29:04Z",
+         "retrievedBy": {
+           "uri":     "http://example.com/foaf#peter",
+           "orcid":   "http://orcid.org/0000-0002-1825-0120",
+           "name":    "Peter L. Jones"
+         }
+       },
        { "uri":  "http://example.com/blog/" },
        { "uri":      "/README.txt",
          "mediatype": "text/plain",
          "createdBy": {
              "uri":     "http://example.com/foaf#bob",
              "name":    "Bob Builder" },
-         "createdOn": "2013-02-12T19:37:32.939Z" },
+         "createdOn": "2013-02-12T19:37:32.939Z",
+         "importedFrom": "http://example.com/readme.html",
+         "importedOn": "2013-02-11T17:30:08Z",
+         "importedBy": {
+           "uri":     "http://example.com/foaf#homer",
+           "orcid":   "http://orcid.org/0000-0002-1825-0140",
+           "name":    "Homer J. Simpson"
+         }
+       },
        { "uri":    "http://example.com/comments.txt",
          "bundledAs": {
             "uri":    "urn:uuid:a0cf8616-bee4-4a71-b21e-c60e6499a644",
@@ -29,7 +59,8 @@
     "annotations": [
       { "uri":     "urn:uuid:d67466b4-3aeb-4855-8203-90febe71abdf",
         "about":   "/folder/soup.jpeg",
-        "content": "annotations/soup-properties.ttl" },
+        "content": "annotations/soup-properties.ttl"
+      },
 
       { "about":   "urn:uuid:a0cf8616-bee4-4a71-b21e-c60e6499a644",
         "content": "http://example.com/blog/they-aggregated-our-file" },

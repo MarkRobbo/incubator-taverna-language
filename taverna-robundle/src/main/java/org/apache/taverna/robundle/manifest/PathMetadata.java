@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder(value = { "uri", "mediatype", "createdOn", "createdBy",
 		"authoredOn", "authoredBy", "retrievedFrom", "retrievedOn",
+		"importedFrom", "importedOn", "importedBy",
 		"retrievedBy", "conformsTo", "bundledAs" })
 public class PathMetadata {
 
@@ -50,6 +51,10 @@ public class PathMetadata {
 	private URI retrievedFrom;
 	private Agent retrievedBy;
 	private FileTime retrievedOn;
+
+	private URI importedFrom;
+	private Agent importedBy;
+	private FileTime importedOn;
 
 	private String mediatype;
 
@@ -97,6 +102,18 @@ public class PathMetadata {
 
 	public FileTime getRetrievedOn() {
 		return retrievedOn;
+	}
+
+	public URI getImportedFrom() {
+		return importedFrom;
+	}
+
+	public Agent getImportedBy() {
+		return importedBy;
+	}
+
+	public FileTime getImportedOn() {
+		return importedOn;
 	}
 
 	@JsonIgnore
@@ -182,6 +199,18 @@ public class PathMetadata {
 
 	public void setRetrievedOn(FileTime retrievedOn) {
 		this.retrievedOn = retrievedOn;
+	}
+
+	public void setImportedFrom(URI importedFrom) {
+		this.importedFrom = importedFrom;
+	}
+
+	public void setImportedBy(Agent importedBy) {
+		this.importedBy = importedBy;
+	}
+
+	public void setImportedOn(FileTime importedOn) {
+		this.importedOn = importedOn;
 	}
 
 	public void setFile(Path file) {

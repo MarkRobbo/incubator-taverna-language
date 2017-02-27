@@ -70,6 +70,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @JsonPropertyOrder(value = { "@context", "id", "manifest", "createdOn",
 		"createdBy", "createdOn", "authoredOn", "authoredBy",
 		"retrievedFrom", "retrievedOn", "retrievedBy",
+		"importedFrom", "importedOn", "importedBy",
 		"history", "aggregates", "annotations", "@graph" })
 public class Manifest {
 	public abstract class FileTimeMixin {
@@ -124,6 +125,9 @@ public class Manifest {
 	private URI retrievedFrom = null;
 	private Agent retrievedBy = null;
 	private FileTime retrievedOn = null;
+	private URI importedFrom = null;
+	private Agent importedBy = null;
+	private FileTime importedOn = null;
 	private List<String> graph;
 	private List<Path> history = new ArrayList<>();
 	private URI id = URI.create("/");
@@ -209,6 +213,18 @@ public class Manifest {
 
 	public FileTime getRetrievedOn() {
 		return retrievedOn;
+	}
+
+	public URI getImportedFrom() {
+		return importedFrom;
+	}
+
+	public Agent getImportedBy() {
+		return importedBy;
+	}
+
+	public FileTime getImportedOn() {
+		return importedOn;
 	}
 
 	public List<String> getGraph() {
@@ -411,6 +427,18 @@ public class Manifest {
 
 	public void setRetrievedOn(FileTime retrievedOn) {
 		this.retrievedOn = retrievedOn;
+	}
+
+	public void setImportedFrom(URI importedFrom) {
+		this.importedFrom = importedFrom;
+	}
+
+	public void setImportedBy(Agent importedBy) {
+		this.importedBy = importedBy;
+	}
+
+	public void setImportedOn(FileTime importedOn) {
+		this.importedOn = importedOn;
 	}
 
 	public void setGraph(List<String> graph) {

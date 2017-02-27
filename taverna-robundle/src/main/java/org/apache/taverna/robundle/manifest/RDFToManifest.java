@@ -35,6 +35,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.jena.riot.Lang;
@@ -133,6 +134,9 @@ public class RDFToManifest {
 	private ObjectProperty retrievedFrom;
 	private ObjectProperty retrievedBy;
 	private DatatypeProperty retrievedOn;
+	private ObjectProperty importedFrom;
+	private ObjectProperty importedBy;
+	private DatatypeProperty importedOn;
 	private OntModel dct;
 	private OntModel foaf;
 	private DatatypeProperty foafName;
@@ -342,9 +346,13 @@ public class RDFToManifest {
 		retrievedFrom = ontModel.getObjectProperty(PAV + "retrievedFrom");
 		retrievedBy = ontModel.getObjectProperty(PAV + "retrievedBy");
 		retrievedOn = ontModel.getDatatypeProperty(PAV + "retrievedOn");
+		importedFrom = ontModel.getObjectProperty(PAV + "importedFrom");
+		importedBy = ontModel.getObjectProperty(PAV + "importedBy");
+		importedOn = ontModel.getDatatypeProperty(PAV + "importedOn");
 
 		checkNotNull(createdBy, createdOn, authoredBy, authoredOn,
-				retrievedFrom, retrievedBy, retrievedOn);
+				retrievedFrom, retrievedBy, retrievedOn,
+				importedFrom, importedBy, importedOn);
 
 		pav = ontModel;
 	}
@@ -435,7 +443,14 @@ public class RDFToManifest {
 
 		// retrievedFrom
 		RDFNode retrievedNode = ro.getPropertyValue(retrievedFrom);
-		manifest.setRetrievedFrom(retrievedNode);
+		if (retrievedNode != null) {
+    		try {
+    			manifest.setRetrievedFrom(new URI(retrievedNode.asResource().getURI()));
+    		} catch (URISyntaxException ex) {
+    			logger.log(Level.WARNING, "Error creating URI for retrievedFrom: " +
+    					retrievedNode.asResource().getURI(), ex);
+    		}
+		}
 
 		// retrievedBy
 		List<Agent> retrievers = getAgents(root, ro, retrievedBy);
@@ -449,6 +464,30 @@ public class RDFToManifest {
 		// retrievedOn
 		RDFNode retrieved = ro.getPropertyValue(retrievedOn);
 		manifest.setRetrievedOn(literalAsFileTime(retrieved));
+
+		// importedFrom
+		RDFNode importedNode = ro.getPropertyValue(importedFrom);
+		if (importedNode != null) {
+			try {
+				manifest.setImportedFrom(new URI(importedNode.asResource().getURI()));
+			} catch (URISyntaxException ex) {
+				logger.log(Level.WARNING, "Error creating URI for importedFrom: " +
+						importedNode.asResource().getURI(), ex);
+			}
+		}
+
+		// importedBy
+		List<Agent> importers = getAgents(root, ro, importedBy);
+		if (!importers.isEmpty()) {
+			manifest.setImportedBy(importers.get(0));
+			if (importers.size() > 1) {
+				logger.warning("Ignoring additional importedBy agents");
+			}
+		}
+
+		// importedOn
+		RDFNode imported = ro.getPropertyValue(importedOn);
+		manifest.setImportedOn(literalAsFileTime(imported));
 
 		// Aggregates
 		for (Individual aggrResource : listObjectProperties(ro, aggregates)) {
@@ -498,7 +537,14 @@ public class RDFToManifest {
 
 			// retrievedFrom
 			RDFNode retrievedAggrNode = aggrResource.getPropertyValue(retrievedFrom);
-			meta.setRetrievedFrom(retrievedAggrNode);
+			if (retrievedAggrNode != null) {
+    			try {
+    				meta.setRetrievedFrom(new URI(retrievedAggrNode.asResource().getURI()));
+    			} catch (URISyntaxException ex) {
+    				logger.log(Level.WARNING, "Error creating URI for retrievedFrom: " +
+    						retrievedAggrNode.asResource().getURI(), ex);
+    			}
+			}
 
 			// retrievedBy
 			List<Agent> retrieversAggr = getAgents(root, aggrResource, retrievedBy);
@@ -513,6 +559,30 @@ public class RDFToManifest {
 			// retrievedOn
 			RDFNode retrievedAggr = aggrResource.getPropertyValue(retrievedOn);
 			meta.setRetrievedOn(literalAsFileTime(retrievedAggr));
+
+			// importedFrom
+			RDFNode importedAggrNode = aggrResource.getPropertyValue(importedFrom);
+			if (importedAggrNode != null) {
+				try {
+					meta.setImportedFrom(new URI(importedAggrNode.asResource().getURI()));
+				} catch (URISyntaxException ex) {
+					logger.log(Level.WARNING, "Error creating URI for importedFrom: " +
+							importedAggrNode.asResource().getURI(), ex);
+				}
+			}
+
+			// importedBy
+			List<Agent> importersAggr = getAgents(root, aggrResource, importedBy);
+			if (!importersAggr.isEmpty()) {
+				meta.setImportedBy(importersAggr.get(0));
+				if (importersAggr.size() > 1) {
+					logger.warning("Ignoring additional importedBy agents");
+				}
+			}
+
+			// importedOn
+			RDFNode importedAggr = aggrResource.getPropertyValue(importedOn);
+			meta.setImportedOn(literalAsFileTime(importedAggr));
 
 			// conformsTo
 			for (Individual standard : listObjectProperties(aggrResource,

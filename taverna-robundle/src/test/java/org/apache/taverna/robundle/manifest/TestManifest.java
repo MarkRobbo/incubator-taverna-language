@@ -39,9 +39,6 @@ import java.util.UUID;
 
 import org.apache.taverna.robundle.Bundle;
 import org.apache.taverna.robundle.Bundles;
-import org.apache.taverna.robundle.manifest.Manifest;
-import org.apache.taverna.robundle.manifest.PathMetadata;
-import org.apache.taverna.robundle.manifest.RDFToManifest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -214,8 +211,27 @@ public class TestManifest {
 				manifest.getBaseURI().resolve("does/not/exist"));
 
 		Path r = bundle.getRoot();
+
+		assertEquals("http://example.com/retrieved", manifest.getRetrievedFrom().toString());
+		assertEquals("2013-03-05T17:29:03Z", manifest.getRetrievedOn().toString());
+		assertEquals("http://example.com/foaf#john", manifest.getRetrievedBy().getUri().toString());
+
+		assertEquals("http://example.com/retrieved.tar.gz", manifest.getImportedFrom().toString());
+		assertEquals("2013-03-05T17:29:21Z", manifest.getImportedOn().toString());
+		assertEquals("David Jones", manifest.getImportedBy().getName());
+
+		PathMetadata soupAggregation = manifest.getAggregation(r.resolve("/folder/soup.jpeg"));
+		assertEquals("http://example.com/retrieved/soup.jpeg", soupAggregation.getRetrievedFrom().toString());
+		assertEquals("2013-03-05T17:29:04Z", soupAggregation.getRetrievedOn().toString());
+		assertEquals("http://example.com/foaf#peter", soupAggregation.getRetrievedBy().getUri().toString());
+
 		assertNotNull(manifest.getAggregation(r.resolve("/README.txt")));
 		PathMetadata readme = manifest.getAggregation(r.resolve("/README.txt"));
+
+		assertEquals("http://example.com/readme.html", readme.getImportedFrom().toString());
+		assertEquals("2013-02-11T17:30:08Z", readme.getImportedOn().toString());
+		assertEquals("http://orcid.org/0000-0002-1825-0140", readme.getImportedBy().getOrcid().toString());
+
 		assertEquals("http://example.com/foaf#bob", readme.getCreatedBy()
 				.getUri().toString());
 		assertEquals("Bob Builder",
